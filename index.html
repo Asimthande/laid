@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+            margin: 0;
+        }
+        .message-box {
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+            background-color: #ffebcd;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="message-box" id="messageBox">
+        <!-- Messages will be displayed here -->
+    </div>
+
+    <script>
+        const messages = [
+            "You're amazing!",
+            "I can't stop thinking about you!",
+            "You make my day brighter.",
+            "Every moment with you is special.",
+            "You mean the world to me.",
+            "You have the best smile!",
+            "You're my favorite person in the world!",
+            "I'm so lucky to have you!"
+        ];
+
+        let currentIndex = 0;
+        const messageBox = document.getElementById("messageBox");
+
+        function changeMessage() {
+            messageBox.textContent = messages[currentIndex];
+            currentIndex = (currentIndex + 1) % messages.length;
+        }
+
+        // Change the message every 3 seconds
+        setInterval(changeMessage, 3000);
+
+        // Initial message load
+        changeMessage();
+    </script>
+
+</body>
+</html>
