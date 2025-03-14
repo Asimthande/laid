@@ -1,63 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cool Messages</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f8ff;
-            margin: 0;
-        }
-        .message-box {
-            padding: 20px;
-            font-size: 24px;
-            text-align: center;
-            background-color: #ffebcd;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Location Tracking</title>
+
+  <!-- Include Leaflet CSS for map styling -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+    #coordinates {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="message-box" id="messageBox">
-        <!-- Messages will be displayed here -->
-    </div>
+<h3>Real-Time Location Tracker</h3>
+<p id="coordinates">Fetching coordinates...</p>
 
-    <script>
-        const messages = [
-            "You're amazing!",
-            "I can't stop thinking about you!",
-            "You make my day brighter.",
-            "Every moment with you is special.",
-            "You mean the world to me.",
-            "You have the best smile!",
-            "You're my favorite person in the world!",
-            "I'm so lucky to have you!"
-        ];
+<div id="map"></div>
 
-        let currentIndex = 0;
-        const messageBox = document.getElementById("messageBox");
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+// Initialize the map with a default position (centered in London for now)
+var map = L.map('map').setView([51.505, -0.09], 13);
 
-        function changeMessage() {
-            messageBox.textContent = messages[currentIndex];
-            currentIndex = (currentIndex + 1) % messages.length;
-        }
+// Add OpenStreetMap tile layer to the map
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
 
-        // Change the message every 3 seconds
-        setInterval(changeMessage, 3000);
+// Create a marker at the initial position (default position)
+var marker = L.marker([51.505, -0.09]).addTo(map);
 
-        // Initial message load
-        changeMessage();
-    </script>
+// Function to update marker position on the map
+function updateLocation(lat, lng) {
+  marker.setLatLng([lat, lng]);  // Move the marker
+  map.setView([lat, lng]);  // Re-center the map to the new coordinates
+  document.getElementById('coordinates').innerText = `Latitude: ${lat}, Longitude: ${lng}`;
+}
+
+// Check if Geolocation is supported by the browser
+if (navigator.geolocation) {
+  // Watch the user's position and update the map as the position changes
+  navigator.geolocation.watchPosition(function(position) {
+    var lat = position.coords.latitude;
+    var lng = position.coords.longitude;
+    
+    // Update the map with the new coordinates
+    updateLocation(lat, lng);
+  }, function(error) {
+    // Handle errors, like user denying location access
+    console.error('Error getting geolocation:', error);
+    document.getElementById('coordinates').innerText = 'Unable to retrieve location.';
+  }, {
+    enableHighAccuracy: true,  // Request high-accuracy location data
+    maximumAge: 0,             // Don't use cached position, get the latest
+    distanceFilter: 10         // Trigger updates when the device moves 10 meters
+  });
+} else {
+  console.log("Geolocation is not supported by this browser.");
+  document.getElementById('coordinates').innerText = 'Geolocation not supported.';
+}
+</script>
 
 </body>
 </html>
